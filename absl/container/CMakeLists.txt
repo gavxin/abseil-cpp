@@ -32,6 +32,7 @@ absl_cc_library(
     compressed_tuple
   SRCS
    "internal/compressed_tuple.h"
+   "internal/compressed_tuple.cc"
   DEPS
     absl::utility
   PUBLIC
