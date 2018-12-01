@@ -38,7 +38,8 @@ if (MSVC)
   # /wd4244  conversion from 'type1' to 'type2'
   # /wd4267  conversion from 'size_t' to 'type2'
   # /wd4800  force value to bool 'true' or 'false' (performance warning)
-  add_compile_options(/W3 /wd4005 /wd4068 /wd4244 /wd4267 /wd4800)
+  # /wd4018  signed/unsigned mismatch
+  add_compile_options(/W3 /wd4005 /wd4068 /wd4244 /wd4267 /wd4800 /wd4018)
   # /D_ENABLE_EXTENDED_ALIGNED_STORAGE Introduced in VS 2017 15.8, before the
   # member type would non-conformingly have an alignment of only alignof(max_align_t).
   add_definitions(
@@ -66,7 +67,7 @@ endif()
 
 
 # include current path
-list(APPEND ABSL_COMMON_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
+list(APPEND ABSL_COMMON_INCLUDE_DIRS $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<INSTALL_INTERFACE:include>)
 
 # -std=X
 set(CMAKE_CXX_FLAGS "${ABSL_STD_CXX_FLAG} ${CMAKE_CXX_FLAGS}")
@@ -116,3 +117,17 @@ if(BUILD_TESTING)
 endif()
 
 add_subdirectory(absl)
+
+file(GLOB_RECURSE HEADERS "absl/*.h" "absl/*.inc")
+foreach(file IN LISTS HEADERS)
+  get_filename_component(dir ${file} DIRECTORY)
+  file(RELATIVE_PATH rel_dir ${CMAKE_SOURCE_DIR} ${dir})
+  install(FILES ${file} DESTINATION "include/${rel_dir}")
+endforeach()
+
+install(
+  EXPORT abseil-lts
+  FILE abseil-lts-config.cmake
+  NAMESPACE abseil-lts::
+  DESTINATION share/abseil-lts
+)
