@@ -37,7 +37,7 @@ set(ABSL_IDE_FOLDER Abseil)
 #
 function(absl_library)
   cmake_parse_arguments(ABSL_LIB
-    "DISABLE_INSTALL" # keep that in case we want to support installation one day
+    "" # "DISABLE_INSTALL" # keep that in case we want to support installation one day
     "TARGET;EXPORT_NAME"
     "SOURCES;PUBLIC_LIBRARIES;PRIVATE_COMPILE_FLAGS"
     ${ARGN}
@@ -60,6 +60,12 @@ function(absl_library)
   if(ABSL_LIB_EXPORT_NAME)
     add_library(absl::${ABSL_LIB_EXPORT_NAME} ALIAS ${_NAME})
   endif()
+
+  install(TARGETS ${_NAME} EXPORT abseil-lts
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+  )
 endfunction()
 
 
@@ -69,7 +75,7 @@ endfunction()
 #
 function(absl_header_library)
   cmake_parse_arguments(ABSL_HO_LIB
-    "DISABLE_INSTALL"
+    "" # "DISABLE_INSTALL"
     "EXPORT_NAME;TARGET"
     "PUBLIC_LIBRARIES;PRIVATE_COMPILE_FLAGS;PUBLIC_INCLUDE_DIRS;PRIVATE_INCLUDE_DIRS"
     ${ARGN}
@@ -107,6 +113,11 @@ function(absl_header_library)
     add_library(absl::${ABSL_HO_LIB_EXPORT_NAME} ALIAS ${_NAME})
   endif()
 
+  install(TARGETS ${_NAME} EXPORT abseil-lts
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+  )
 endfunction()
 
 
