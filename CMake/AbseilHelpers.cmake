@@ -127,7 +127,7 @@ endfunction()
 # TODO: Implement "ALWAYSLINK"
 function(absl_cc_library)
   cmake_parse_arguments(ABSL_CC_LIB
-    "DISABLE_INSTALL;PUBLIC;TESTONLY"
+    "PUBLIC;TESTONLY" # "DISABLE_INSTALL;PUBLIC;TESTONLY"
     "NAME"
     "HDRS;SRCS;COPTS;DEFINES;LINKOPTS;DEPS"
     ${ARGN}
@@ -141,6 +141,7 @@ function(absl_cc_library)
     endif()
 
     # Check if this is a header-only library
+    message("${ABSL_CC_LIB_NAME}00000${ABSL_CC_LIB_SRCS}11111")
     if ("${ABSL_CC_LIB_SRCS}" STREQUAL "")
       set(ABSL_CC_LIB_IS_INTERFACE 1)
     else()
@@ -184,6 +185,12 @@ function(absl_cc_library)
     endif()
 
     add_library(absl::${ABSL_CC_LIB_NAME} ALIAS ${_NAME})
+
+    install(TARGETS ${_NAME} EXPORT abseil-lts
+      RUNTIME DESTINATION bin
+      LIBRARY DESTINATION lib
+      ARCHIVE DESTINATION lib
+    )
   endif()
 endfunction()
 

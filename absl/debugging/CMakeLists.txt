@@ -184,6 +184,7 @@ absl_cc_library(
     "$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:leak_check.h>"
   SRCS
     "$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:leak_check.cc>"
+    empty.cc
   COPTS
     ${ABSL_DEFAULT_COPTS}
   DEPS
